@@ -8,7 +8,7 @@ URL = 'http://127.0.0.1:1180/?action=stream'
 TEAM_NUMBER = 3863
 
 NT_SERVER = 'roboRIO-%s-FRC.local' % (TEAM_NUMBER)
-NT_TABLE_NAME ='/vision/opencvoutput'
+NT_TABLE_NAME ='/vision/opencv'
 
 EXTRA_OUTPUT_ATTRS = [] #Output values from Pipeline will be automatically detected.
                         #If for some reason they aren't, put any extra attribues here
@@ -42,8 +42,8 @@ class ProcessPipelineWithURL:
 
     def sendPipelineOutput(self):
         pipelineAttrs = self.pipeline.__dict__.keys()
-        attrsToOutput = [attr for attr in pipelineAttrs if attr.endswith('_output')]
-        attrsToOutput.update(EXTRA_OUTPUT_ATTRS)
+        outputAttrs = [attr for attr in pipelineAttrs if attr.endswith('_output')]
+        attrsToOutput = outputAttrs + EXTRA_OUTPUT_ATTRS
         for attr in attrsToOutput:
             prettyAttrName = attr.replace('_output', '')
             try:
