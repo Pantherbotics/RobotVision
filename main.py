@@ -4,7 +4,7 @@ from cv2 import VideoCapture
 from networktables import NetworkTables
 from grip import GripPipeline
 
-URL = 'http://127.0.0.1:1180/?action=stream'
+URL = 'http://raspberrypi.local:1180/?action=stream'
 TEAM_NUMBER = 3863
 
 NT_SERVER = 'roboRIO-%s-FRC.local' % (TEAM_NUMBER)
@@ -57,7 +57,7 @@ class ProcessPipelineWithURL:
         self.logger.info('Attempting to process camera stream')
         while True:
             frame = self.readStreamFrame()
-            if frame:
+            if not frame is None:
                 self.pipeline.process(frame)
                 self.sendPipelineOutput()
 
