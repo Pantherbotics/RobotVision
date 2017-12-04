@@ -53,6 +53,10 @@ class ProcessPipelineWithURL:
     def sendPipelineOutput(self):
         idx = 0
         attrValue = getattr(self.pipeline, "filter_contours_output")
+
+        if len(attrValue) == 0:
+            return
+
         if self.writeCurses:
             self.scr.clear()
         for arr in attrValue[0]:
