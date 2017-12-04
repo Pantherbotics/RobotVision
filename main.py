@@ -41,18 +41,10 @@ class ProcessPipelineWithURL:
             return frame
 
     def sendPipelineOutput(self):
-        pipelineAttrs = self.pipeline.__dict__.keys()
-        outputAttrs = [attr for attr in pipelineAttrs if attr.endswith('_output')]
-        attrsToOutput = outputAttrs + EXTRA_OUTPUT_ATTRS
-        for attr in attrsToOutput:
-            prettyAttrName = attr.replace('_output', '')
-            try:
-                attrValue = getattr(self.pipeline, attr)
-                attrValue = attrValue.tolist()
-            except AttributeError:
-                self.logger.error("OpenCV pipeline doesn't have attribute: %s", attr)
-                continue
-            self.table.putNumberArray(prettyAttrName, attrValue)
+        attrValue = getattr(self.pipeline, "filter_contours_output")
+        attrValue = attrValue.tolist()
+        print(attrValue)
+        self.table.putList("filter_contours", attrValue)
 
     def run(self):
         self.logger.info('Attempting to process camera stream')
