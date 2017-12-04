@@ -49,6 +49,9 @@ class ProcessPipelineWithURL:
             try:
                 attrValue = getattr(self.pipeline, attr)
                 print(type(attrValue))
+                print(attrValue.tolist())
+                attrValue = attrValue.tolist()
+                
             except AttributeError:
                 self.logger.error("OpenCV pipeline doesn't have attribute: %s", attr)
                 continue
