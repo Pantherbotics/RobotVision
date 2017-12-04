@@ -41,9 +41,12 @@ class ProcessPipelineWithURL:
             return frame
 
     def sendPipelineOutput(self):
+        idx = 0
         attrValue = getattr(self.pipeline, "filter_contours_output")
-        print(attrValue)
-        self.table.putValue("filter_contours", attrValue)
+        for arr in attrValue:
+            val = list(arr)
+            self.table.putNumberArray("filter_contours_%s" % idx, arr)
+            idx += 1
 
     def run(self):
         self.logger.info('Attempting to process camera stream')
