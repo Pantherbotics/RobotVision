@@ -44,7 +44,7 @@ class ProcessPipelineWithURL:
         idx = 0
         attrValue = getattr(self.pipeline, "filter_contours_output")
         for arr in attrValue[0]:
-            a = arr[0]
+            a = arr[0].tolist()
             n = "filter_contours_%s" % idx
             self.table.putNumberArray(n, a)
             self.logger.debug('Name: %s type: %s val: %s', n, type(a), a)
