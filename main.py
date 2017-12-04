@@ -1,5 +1,8 @@
 import time
 import logging
+import argparse
+import curses
+import operator
 from cv2 import VideoCapture
 from networktables import NetworkTables
 from grip import GripPipeline
@@ -13,7 +16,10 @@ NT_TABLE_NAME ='/vision/opencv'
 EXTRA_OUTPUT_ATTRS = [] #Output values from Pipeline will be automatically detected.
                         #If for some reason they aren't, put any extra attribues here
 
+VIS_SIZE = (640,480)
+
 class ProcessPipelineWithURL:
+    writeCurses = False
     def __init__(self, cameraStreamURL, Pipeline):
         self.url = cameraStreamURL
         self.pipeline = Pipeline()
@@ -40,6 +46,10 @@ class ProcessPipelineWithURL:
                 self.logger.debug('Stream status: %s', connected)
             return frame
 
+    def initCurses(self):
+        self.writeCurses = True
+        self.scr = curses.initscr()
+
     def sendPipelineOutput(self):
         idx = 0
         attrValue = getattr(self.pipeline, "filter_contours_output")
@@ -47,8 +57,16 @@ class ProcessPipelineWithURL:
             a = arr[0].tolist()
             n = "filter_contours_%s" % idx
             self.table.putNumberArray(n, a)
+            if self.writeCurses:
+                self.cursesTerminalWrite(a)
             self.logger.debug('Name: %s type: %s val: %s', n, type(a), a)
             idx += 1
+
+    def cursesTerminalWrite(self, point):
+        percent = tuple(map(operator.truediv, point, VIS_SIZE))
+        x, y = tuple(map(operator.mul, percent, self.scr.getmaxyx()))
+        self.scr.addstr(int(x), int(y), '#')
+        self.scr.refresh()
 
     def run(self):
         self.logger.info('Attempting to process camera stream')
@@ -59,7 +77,24 @@ class ProcessPipelineWithURL:
                 self.sendPipelineOutput()
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    
     p = ProcessPipelineWithURL(URL, GripPipeline)
-    p.run()
+
+    parser = argparse.ArgumentParser(description='Vision Processing')
+    parser.add_argument('--curses', action='store_true', 
+                       help='Enable curses ouput')
+    args = parser.parse_args()
+    if args.curses:
+        logging.basicConfig(level=logging.CRITICAL)
+        p.initCurses()
+    else:
+        logging.basicConfig(level=logging.DEBUG)
+    
+    try:
+        p.run()
+    except BaseException as er:
+        if args.curses:
+            curses.endwin()
+        raise er
+
 
