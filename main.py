@@ -43,9 +43,11 @@ class ProcessPipelineWithURL:
     def sendPipelineOutput(self):
         idx = 0
         attrValue = getattr(self.pipeline, "filter_contours_output")
-        for arr in attrValue:
-            print(arr)
-            self.table.putNumberArray("filter_contours_%s" % idx, arr)
+        for arr in attrValue[0]:
+            a = arr[0]
+            n = "filter_contours_%s" % idx
+            self.table.putNumberArray(n, a)
+            self.logger.debug('Name: %s type: %s val: %s', n, type(a), a)
             idx += 1
 
     def run(self):
