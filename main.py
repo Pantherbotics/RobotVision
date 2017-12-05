@@ -100,7 +100,7 @@ class ProcessPipelineWithURL:
         percent = tuple(map(operator.truediv, point, VIS_SIZE))
         x, y = tuple(map(operator.mul, percent, self.scr.getmaxyx()))
         try:
-            self.scr.addstr(int(x), int(y), str(char))
+            self.scr.addstr(int(y), int(x), str(char))
             self.scr.refresh()
         except:
             pass
