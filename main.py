@@ -54,10 +54,10 @@ class ProcessPipelineWithURL:
         sortedY = self.sortTupleListByIdx(coords, 0)[0]
         sortedX = self.sortTupleListByIdx(coords, 0)[1]
 
-        largestY = sortedY[0]
-        smallestY = sortedY[-1]
-        largestX = sortedX[0]
-        smallestX = sortedY[-1]
+        largestY = sortedY[0][0]
+        smallestY = sortedY[-1][0]
+        largestX = sortedX[0][1]
+        smallestX = sortedY[-1][1]
 
         meanX = numpy.mean([largestX, smallestX])
         meanY = numpy.mean([largestY, smallestY])
