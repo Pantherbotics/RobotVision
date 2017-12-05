@@ -51,10 +51,13 @@ class ProcessPipelineWithURL:
         attrValue = getattr(self.pipeline, "filter_contours_output")
         if len(attrValue) == 0: return
         coords = [c[0].tolist() for c in attrValue[0]]
-        largestY = self.sortTupleListByIdx(coords, 0)
-        smallestY = self.sortTupleListByIdx(coords, 0).reverse()
-        largestX = self.sortTupleListByIdx(coords, 1)
-        smallestX = self.sortTupleListByIdx(coords, 1).reverse()
+        sortedY = self.sortTupleListByIdx(coords, 0)[0]
+        sortedX = self.sortTupleListByIdx(coords, 0)[1]
+
+        largestY = sortedY[0]
+        smallestY = sortedY[-1]
+        largestX = sortedX[0]
+        smallestX = sortedY[-1]
 
         meanX = numpy.mean([largestX, smallestX])
         meanY = numpy.mean([largestY, smallestY])
