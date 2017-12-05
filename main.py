@@ -98,12 +98,13 @@ class ProcessPipelineWithURL:
 
     def cursesTerminalWrite(self, point, char="#"):
         percent = tuple(map(operator.truediv, point, VIS_SIZE))
-        x, y = tuple(map(operator.mul, percent, self.scr.getmaxyx()))
+        screenPercent = (percent[1], percent[0])
+        x, y = tuple(map(operator.mul, screenPercent, self.scr.getmaxyx()))
         try:
-            self.scr.addstr(int(y), int(x), str(char))
+            self.scr.addstr(int(x), int(y), str(char))
             self.scr.refresh()
-        except:
-            pass
+        except BaseException as er:
+            print(er)
 
     def run(self):
         self.logger.info('Attempting to process camera stream')
