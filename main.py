@@ -51,17 +51,17 @@ class ProcessPipelineWithURL:
         attrValue = getattr(self.pipeline, "filter_contours_output")
         if len(attrValue) == 0: return
         coords = [c[0].tolist() for c in attrValue[0]]
-        sortedY = self.sortTupleListByIdx(coords, 0)
+        sortedY = self.sortTupleListByIdx(coords, 1)
         sortedX = self.sortTupleListByIdx(coords, 0)
 
         largestY = sortedY[0][0]
-        smallestY = sortedY[-1][0]
-        largestX = sortedX[0][1]
+        smallestY = sortedY[-1][1]
+        largestX = sortedX[1][0]
         smallestX = sortedY[-1][1]
 
         meanX = numpy.mean([largestX, smallestX])
         meanY = numpy.mean([largestY, smallestY])
-        return (meanY, meanX)
+        return (meanX, meanY)
         
     def sortTupleListByIdx(self, tupleList, idx):
         return sorted(tupleList, key=lambda x: x[idx])
@@ -87,7 +87,7 @@ class ProcessPipelineWithURL:
             self.table.putNumberArray(n, a)
             if self.writeCurses:
                 self.cursesTerminalWrite(a)
-            #self.logger.debug('Name: %s type: %s val: %s', n, type(a), a)
+            self.logger.debug('Name: %s type: %s val: %s', n, type(a), a)
             idx += 1
         center = self.calcCenterpoint()
         self.table.putNumberArray('centerpoint', center)
