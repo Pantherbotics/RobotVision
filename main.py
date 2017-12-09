@@ -80,7 +80,9 @@ class ProcessPipelineWithURL:
 
         for contour in contour_list:
             n = "contour_%s" % idx
+            self.logger.debug("checkpoint 1")
             width, height, center = self.processContour(contour)
+            self.logger.debug("checkpoint 2")
             self.table.putNumber(n + "_width", width)
             self.table.putNumber(n + "_height", height)
             self.table.putNumberArray(n + "_centerpoint", center)
