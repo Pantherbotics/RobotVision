@@ -72,17 +72,20 @@ class ProcessPipelineWithURL:
         return width, height, center
 
     def sendPipelineOutput(self):
+        self.logger.debug("start of sendPipelineOutput class")
         idx = 0
+        self.logger.debug("get contour list from pipeline")
         contour_list = getattr(self.pipeline, "filter_contours_output")
 
         if len(contour_list) == 0:
             return
 
+        self.logger.debug("iterating through contour list")
         for contour in contour_list:
             n = "contour_%s" % idx
-            self.logger.debug("checkpoint 1")
+            self.logger.debug("processing the contour")
             width, height, center = self.processContour(contour)
-            self.logger.debug("checkpoint 2")
+            self.logger.debug("send width, height, center to networktables")
             self.table.putNumber(n + "_width", width)
             self.table.putNumber(n + "_height", height)
             self.table.putNumberArray(n + "_centerpoint", center)
