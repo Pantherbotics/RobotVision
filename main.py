@@ -68,6 +68,7 @@ class ProcessPipelineWithURL:
         height = y_max - y_min
 
         center = ((x_max+x_min)/2, (y_max+y_min)/2)
+        self.logger.debug("Contour height: %s, width: %s, center: %s", height, width, center)
         return width, height, center
 
     def sendPipelineOutput(self):
