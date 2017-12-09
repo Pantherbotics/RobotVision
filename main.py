@@ -62,8 +62,8 @@ class ProcessPipelineWithURL:
         y_values = []
         self.logger.debug("Getting x-values and y-values of contour")
         for arr in contour:
-            x_values.append(arr[0])
-            y_values.append(arr[1])
+            x_values.append(arr[0][0])
+            y_values.append(arr[0][1])
         self.logger.debug("Calculating max and min")
         x_max = numpy.max(x_values)
         y_max = numpy.max(y_values)
