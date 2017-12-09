@@ -19,8 +19,10 @@ EXTRA_OUTPUT_ATTRS = [] #Output values from Pipeline will be automatically detec
 
 VIS_SIZE = (640,480)
 
+
 class ProcessPipelineWithURL:
     writeCurses = False
+
     def __init__(self, cameraStreamURL, Pipeline):
         self.url = cameraStreamURL
         self.pipeline = Pipeline()
@@ -47,29 +49,26 @@ class ProcessPipelineWithURL:
                 self.logger.debug('Stream status: %s', connected)
             return frame
 
-    def calcCenterpoint(self):
-        attrValue = getattr(self.pipeline, "filter_contours_output")
-        if len(attrValue) == 0: return
-        coords = [c[0].tolist() for c in attrValue[0]]
-        sortedY = self.sortTupleListByIdx(coords, 1)
-        sortedX = self.sortTupleListByIdx(coords, 0)
-
-        largestY = sortedY[0][0]
-        smallestY = sortedY[-1][1]
-        largestX = sortedX[1][0]
-        smallestX = sortedY[-1][1]
-
-        meanX = numpy.mean([largestX, smallestX])
-        meanY = numpy.mean([largestY, smallestY])
-        return (meanX, meanY)
-
     def sortTupleListByIdx(self, tupleList, idx):
         return sorted(tupleList, key=lambda x: x[idx])
-
 
     def initCurses(self):
         self.writeCurses = True
         self.scr = curses.initscr()
+
+    def processContour(self, contour):
+        x_values = contour[:, 0]
+        y_values = contour[:, 1]
+        x_max = numpy.max(x_values)
+        y_max = numpy.max(y_values)
+        x_min = numpy.min(x_values)
+        y_min = numpy.min(y_values)
+
+        width = x_max - x_min
+        height = y_max - y_min
+
+        center = ((x_max+x_min)/2, (y_max+y_min)/2)
+        return width, height, center
 
     def sendPipelineOutput(self):
         idx = 0
@@ -80,25 +79,18 @@ class ProcessPipelineWithURL:
 
         for contour in contour_list:
             n = "contour_%s" % idx
-            width, height, center = processContour(contour)
+            width, height, center = self.processContour(contour)
             self.table.putNumber(n + "_width", width)
             self.table.putNumber(n + "_height", height)
             self.table.putNumberArray(n + "_centerpoint", center)
+            self.logger.debug('Name: %s height: %s width: %s center: %s', n, height, width, center)
             if self.writeCurses:
                 self.cursesTerminalWrite(contour)
-            self.logger.debug('Name: %s type: %s val: %s', n, type(contour), contour)
             idx += 1
             if self.writeCurses:
                 self.cursesTerminalWrite(center, char="X")
             self.logger.debug('Centerpoint: (%s,%s)', center[1], center[0])
 
-	def processContour(self, contour):
-		minXY = numpy.amin(contour, axis = 0)
-		maxXY = numpy.amax(contour, axis = 0)
-		width = maxXY[0] - minXY[0]
-		height = maxXY[1] - minXY[1]
-		center = [(maxXY[0] + minXY[0])/2, (maxXY[1] + minXY[1])/2]
-		return [width, height, center]
 
     def cursesTerminalWrite(self, point, char="#"):
         percent = tuple(map(operator.truediv, point, VIS_SIZE))
