@@ -97,7 +97,7 @@ class ProcessPipelineWithURL:
 		maxXY = numpy.amax(contour, axis = 0)
 		width = maxXY[0] - minXY[0]
 		height = maxXY[1] - minXY[1]
-		center = [(maxXY[0] + minXY[0])/2, (maxXY[1] + minXY[1])/2)]
+		center = [(maxXY[0] + minXY[0])/2, (maxXY[1] + minXY[1])/2]
 		return [width, height, center]
 
     def cursesTerminalWrite(self, point, char="#"):
