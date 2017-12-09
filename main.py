@@ -57,16 +57,24 @@ class ProcessPipelineWithURL:
         self.scr = curses.initscr()
 
     def processContour(self, contour):
-        x_values = contour[:, 0]
-        y_values = contour[:, 1]
+        self.logger.debug("Contour: \n %s", contour)
+        x_values = []
+        y_values = []
+        self.logger.debug("Getting x-values and y-values of contour")
+        for arr in contour:
+            x_values.append(arr[0][0])
+            y_values.append(arr[0][1])
+        self.logger.debug("Calculating max and min")
         x_max = numpy.max(x_values)
         y_max = numpy.max(y_values)
         x_min = numpy.min(x_values)
         y_min = numpy.min(y_values)
 
+        self.logger.debug("Calculating width and height")
         width = x_max - x_min
         height = y_max - y_min
 
+        self.logger.debug("Calculating center")
         center = ((x_max+x_min)/2, (y_max+y_min)/2)
         self.logger.debug("Contour height: %s, width: %s, center: %s", height, width, center)
         return width, height, center
