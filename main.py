@@ -57,8 +57,11 @@ class ProcessPipelineWithURL:
         self.scr = curses.initscr()
 
     def processContour(self, contour):
-        x_values = contour[:, 0]
-        y_values = contour[:, 1]
+        x_values = None
+        y_values = None
+        for arr in contour:
+            x_values = numpy.append(x_values, arr[0])
+            y_values = numpy.append(y_values, arr[1])
         x_max = numpy.max(x_values)
         y_max = numpy.max(y_values)
         x_min = numpy.min(x_values)
