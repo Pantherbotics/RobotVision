@@ -73,28 +73,33 @@ class ProcessPipelineWithURL:
 
     def sendPipelineOutput(self):
         idx = 0
-        attrValue = getattr(self.pipeline, "filter_contours_output")
+        contour_list = getattr(self.pipeline, "filter_contours_output")
 
-        if len(attrValue) == 0:
+        if len(contour_list) == 0:
             return
 
         if self.writeCurses:
             self.scr.clear()
-        coords = [c[0].tolist() for c in attrValue[0]]
-
-        for a in coords:
+        for contour in contour_list:
+            a = arr[0].tolist()
             n = "filter_contours_%s" % idx
             self.table.putNumberArray(n, a)
             if self.writeCurses:
                 self.cursesTerminalWrite(a)
             self.logger.debug('Name: %s type: %s val: %s', n, type(a), a)
             idx += 1
-        center = self.calcCenterpoint()
         self.table.putNumberArray('centerpoint', center)
         if self.writeCurses:
                 self.cursesTerminalWrite(center, char="X")
         self.logger.debug('Cenerpoint: (%s,%s)', center[1], center[0])
         
+	def processContour(self, contour):
+		minXY = numpy.amin(contour, axis = 0)
+		maxXY = numpy.amax(contour, axis = 0)
+		width = maxXY[0] - minXY[0]
+		height = maxXY[1] - minXY[1]
+		center = [(maxXY[0] + minXY[0])/2, (maxXY[1] + minXY[1])/2)]
+		return [width, height, center]
 
     def cursesTerminalWrite(self, point, char="#"):
         percent = tuple(map(operator.truediv, point, VIS_SIZE))
