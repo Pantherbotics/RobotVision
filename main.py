@@ -86,11 +86,11 @@ class ProcessPipelineWithURL:
             self.table.putNumberArray(n + "_centerpoint", center)
             if self.writeCurses:
                 self.cursesTerminalWrite(contour)
-            self.logger.debug('Name: %s type: %s val: %s', n, type(a), a)
+            self.logger.debug('Name: %s type: %s val: %s', n, type(contour), contour)
             idx += 1
             if self.writeCurses:
                 self.cursesTerminalWrite(center, char="X")
-            self.logger.debug('Cenerpoint: (%s,%s)', center[1], center[0])
+            self.logger.debug('Centerpoint: (%s,%s)', center[1], center[0])
 
 	def processContour(self, contour):
 		minXY = numpy.amin(contour, axis = 0)
