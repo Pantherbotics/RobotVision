@@ -111,9 +111,12 @@ class ProcessPipelineWithURL:
     def run(self):
         self.logger.info('Attempting to process camera stream')
         while True:
+            self.logger.debug("read frame")
             frame = self.readStreamFrame()
             if not frame is None:
+                self.logger.debug("Sending frame to GRIP pipeline")
                 self.pipeline.process(frame)
+                self.logger.debug("Start sending to rio")
                 self.sendPipelineOutput()
 
 if __name__ == '__main__':
