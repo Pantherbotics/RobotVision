@@ -33,7 +33,7 @@ class ProcessPipelineWithURL:
     def readStreamFrame(self):
         init = False
         if not self.stream:
-            init = True 
+            init = True
             self.stream = VideoCapture(self.url)
         connected, frame = self.stream.read()
         if not connected:
@@ -62,7 +62,7 @@ class ProcessPipelineWithURL:
         meanX = numpy.mean([largestX, smallestX])
         meanY = numpy.mean([largestY, smallestY])
         return (meanX, meanY)
-        
+
     def sortTupleListByIdx(self, tupleList, idx):
         return sorted(tupleList, key=lambda x: x[idx])
 
@@ -78,21 +78,20 @@ class ProcessPipelineWithURL:
         if len(contour_list) == 0:
             return
 
-        if self.writeCurses:
-            self.scr.clear()
         for contour in contour_list:
-            a = arr[0].tolist()
-            n = "filter_contours_%s" % idx
-            self.table.putNumberArray(n, a)
+            n = "contour_%s" % idx
+            width, height, center = processContour(contour)
+            self.table.putNumber(n + "_width", width)
+            self.table.putNumber(n + "_height", height)
+            self.table.putNumberArray(n + "_centerpoint", center)
             if self.writeCurses:
-                self.cursesTerminalWrite(a)
+                self.cursesTerminalWrite(contour)
             self.logger.debug('Name: %s type: %s val: %s', n, type(a), a)
             idx += 1
-        self.table.putNumberArray('centerpoint', center)
-        if self.writeCurses:
+            if self.writeCurses:
                 self.cursesTerminalWrite(center, char="X")
-        self.logger.debug('Cenerpoint: (%s,%s)', center[1], center[0])
-        
+            self.logger.debug('Cenerpoint: (%s,%s)', center[1], center[0])
+
 	def processContour(self, contour):
 		minXY = numpy.amin(contour, axis = 0)
 		maxXY = numpy.amax(contour, axis = 0)
@@ -120,11 +119,11 @@ class ProcessPipelineWithURL:
                 self.sendPipelineOutput()
 
 if __name__ == '__main__':
-    
+
     p = ProcessPipelineWithURL(URL, GripPipeline)
 
     parser = argparse.ArgumentParser(description='Vision Processing')
-    parser.add_argument('--curses', action='store_true', 
+    parser.add_argument('--curses', action='store_true',
                        help='Enable curses ouput')
     args = parser.parse_args()
     if args.curses:
@@ -132,12 +131,10 @@ if __name__ == '__main__':
         p.initCurses()
     else:
         logging.basicConfig(level=logging.DEBUG)
-    
+
     try:
         p.run()
     except BaseException as er:
         if args.curses:
             curses.endwin()
         raise er
-
-
