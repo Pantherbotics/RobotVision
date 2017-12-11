@@ -100,6 +100,7 @@ class ProcessPipelineWithURL:
             self.logger.debug('Name: %s height: %s width: %s center: %s', n, height, width, center)
             idx += 1
             if self.writeCurses:
+                self.scr.clear()
                 self.cursesTerminalWrite(center, char="X")
                 #self.cursesTerminalWrite(contour) 
             self.logger.debug('Centerpoint: (%s,%s)', center[1], center[0])
