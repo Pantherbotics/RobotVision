@@ -98,11 +98,10 @@ class ProcessPipelineWithURL:
             self.table.putNumber(n + "_height", height)
             self.table.putNumberArray(n + "_centerpoint", center)
             self.logger.debug('Name: %s height: %s width: %s center: %s', n, height, width, center)
-            if self.writeCurses:
-                self.cursesTerminalWrite(contour)
             idx += 1
             if self.writeCurses:
                 self.cursesTerminalWrite(center, char="X")
+                #self.cursesTerminalWrite(contour) 
             self.logger.debug('Centerpoint: (%s,%s)', center[1], center[0])
 
 
